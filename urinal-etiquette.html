@@ -1,0 +1,1854 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Thirteen Urinal Dilemma</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.css">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* === Theme variables === */
+    :root {
+      --bg: #ffffff;
+      --text: #111111;
+      --text-secondary: #555555;
+      --border: #e0e0e0;
+      --placeholder-bg: #f5f5f5;
+      --placeholder-border: #cccccc;
+      --interactive-bg: #f0f4ff;
+      --interactive-border: #7090e0;
+      --interactive-text: #4060b0;
+      --interactive-label: #7090e0;
+      --toggle-bg: #fafafa;
+      --toggle-border: #e0e0e0;
+      --code-bg: #f5f5f5;
+      --widget-bg: #fafafa;
+      --overlay-bg: rgba(250,250,250,0.92);
+      --urinal-empty: #f7f7f7;
+      --urinal-border: #cccccc;
+      --urinal-blocked-bg: #e8e8e8;
+      --urinal-blocked-border: #d4d4d4;
+      --unum-color: #bbbbbb;
+      --graph-line: #111111;
+      --signoff-border: #e0e0e0;
+      --signoff-color: #444444;
+    }
+
+    [data-theme="dark"] {
+      --bg: #1a1a1a;
+      --text: #e8e8e8;
+      --text-secondary: #aaaaaa;
+      --border: #333333;
+      --placeholder-bg: #242424;
+      --placeholder-border: #444444;
+      --interactive-bg: #1a2035;
+      --interactive-border: #3a5090;
+      --interactive-text: #7090d0;
+      --interactive-label: #5070b0;
+      --toggle-bg: #222222;
+      --toggle-border: #333333;
+      --code-bg: #2a2a2a;
+      --widget-bg: #222222;
+      --overlay-bg: rgba(34,34,34,0.92);
+      --urinal-empty: #484848;
+      --urinal-border: #444444;
+      --urinal-blocked-bg: #252525;
+      --urinal-blocked-border: #333333;
+      --unum-color: #555555;
+      --signoff-border: #333333;
+      --signoff-color: #888888;
+      --graph-line: #ffffff;
+    }
+
+    body {
+      font-family: "Lato", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 18px;
+      line-height: 1.5;
+      color: var(--text);
+      background: var(--bg);
+      padding: 0 1rem;
+      transition: background 0.25s, color 0.25s;
+    }
+
+    /* === Theme toggle button === */
+    .theme-toggle {
+      position: fixed;
+      top: 1.25rem;
+      right: 1.25rem;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      transition: background 0.25s, border-color 0.25s;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      color: var(--text);
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--text-secondary);
+    }
+
+    .theme-toggle svg {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+    }
+
+    .post {
+      max-width: 680px;
+      margin: 4rem auto 6rem;
+    }
+
+    /* Typography */
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 2rem;
+      letter-spacing: -0.02em;
+    }
+
+    h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 3rem;
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
+    }
+
+    p {
+      margin-bottom: 1.25rem;
+    }
+
+    strong { font-weight: 700; }
+    em { font-style: italic; }
+
+    ul {
+      margin: 0 0 1.25rem 0;
+      padding-left: 1.5rem;
+    }
+
+    ul li {
+      margin-bottom: 0.3rem;
+    }
+
+    /* Centered equation line */
+    .equation {
+      text-align: center;
+      font-size: 1.05rem;
+      color: var(--text);
+      margin: 2rem 0;
+      padding: 1.25rem;
+      border-top: 1.5px solid var(--border);
+      border-bottom: 1.5px solid var(--border);
+    }
+
+    /* Image placeholders */
+    .img-placeholder {
+      background: var(--interactive-bg);
+      border: 1.5px dashed var(--interactive-border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+      color: var(--interactive-text);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .img-placeholder .label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--interactive-label);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Interactive placeholders */
+    .interactive-placeholder {
+      background: var(--interactive-bg);
+      border: 1.5px dashed var(--interactive-border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin: 1.75rem 0;
+      color: var(--interactive-text);
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+
+    .interactive-placeholder .label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--interactive-label);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Toggles */
+    details {
+      border: 1.5px solid var(--toggle-border);
+      border-radius: 8px;
+      margin: 1.5rem 0;
+      overflow: hidden;
+    }
+
+    summary {
+      padding: 0.9rem 1.25rem;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.95rem;
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    summary::-webkit-details-marker { display: none; }
+
+    summary::before {
+      content: "▶";
+      font-size: 0.65rem;
+      color: var(--text-secondary);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    details[open] summary::before {
+      transform: rotate(90deg);
+    }
+
+    details[open] summary {
+      border-bottom: 1.5px solid var(--toggle-border);
+    }
+
+    .toggle-content {
+      padding: 1.25rem;
+      font-size: 0.95rem;
+      color: var(--text);
+      line-height: 1.7;
+    }
+
+    .toggle-content p { margin-bottom: 0.9rem; }
+    .toggle-content p:last-child { margin-bottom: 0; }
+
+    .toggle-content .math-line {
+      font-family: "Courier New", monospace;
+      font-size: 0.9rem;
+      background: var(--code-bg);
+      color: var(--text);
+      padding: 0.5rem 0.75rem;
+      border-radius: 4px;
+      margin: 0.75rem 0;
+      display: block;
+    }
+
+    /* Sign-off */
+    .signoff {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--signoff-border);
+      color: var(--signoff-color);
+    }
+
+    /* Rule blocks */
+    .rules-block {
+      margin: 1.5rem 0;
+    }
+
+    .rule {
+      margin-bottom: 0.75rem;
+    }
+
+    /* === Urinal Animation Widget === */
+    :root {
+      --uw: clamp(24px, 4.5vw, 38px);
+      --uh: calc(var(--uw) * 1.35);
+      --ug: clamp(3px, 0.6vw, 5px);
+    }
+
+    .urinal-anim-widget {
+      margin: 1.75rem 0;
+      padding: 1.25rem 1.5rem 1.25rem;
+      background: var(--widget-bg);
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+    }
+
+    .urinal-anim-widget .widget-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-secondary);
+      margin-bottom: 1.1rem;
+    }
+
+    .urinal-wrap {
+      position: relative;
+      margin-bottom: 0.9rem;
+    }
+
+    .urinal-row {
+      display: flex;
+      gap: var(--ug);
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .play-overlay {
+      position: absolute;
+      inset: -4px;
+      background: var(--overlay-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      border-radius: 6px;
+      transition: background 0.15s;
+    }
+
+    .play-overlay:hover .play-btn-big {
+      border-color: var(--text);
+      color: var(--text);
+    }
+
+    .play-btn-big {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 2px solid var(--text-secondary);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      padding-left: 3px;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .urinal-cell {
+      position: relative;
+      width: var(--uw);
+      flex-shrink: 0;
+    }
+
+    .urinal-cell .unum {
+      display: block;
+      text-align: center;
+      font-size: clamp(0.5rem, 1.2vw, 0.62rem);
+      color: var(--unum-color);
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+
+    .urinal-body {
+      width: var(--uw);
+      height: var(--uh);
+      border-radius: 5px 5px 3px 3px;
+      border: 1.5px solid var(--urinal-border);
+      background: var(--urinal-empty);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, border-color 0.2s, opacity 0.2s;
+    }
+
+    .urinal-cell.choosing .urinal-body {
+      background: #5B8DEF;
+      border-color: #4070d0;
+    }
+
+    .urinal-cell.occupied .urinal-body {
+      background: #111827;
+      border-color: #111827;
+    }
+
+    .urinal-cell.blocked .urinal-body {
+      background: var(--urinal-empty);
+      border-color: var(--urinal-border);
+    }
+
+    /* Dark mode: make occupied urinals and people visible */
+    [data-theme="dark"] .urinal-cell.occupied .urinal-body {
+      background: #e8eaf0;
+      border-color: #e8eaf0;
+    }
+
+    [data-theme="dark"] .p-head,
+    [data-theme="dark"] .p-body {
+      background: #111827;
+    }
+
+    [data-theme="dark"] .person-letter {
+      color: #e8eaf0;
+    }
+
+    [data-theme="dark"] .urinal-cell.choosing .urinal-body {
+      background: #4a7de0;
+      border-color: #3060c0;
+    }
+
+    .person-icon {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+      width: 90%;
+    }
+
+    .urinal-cell.occupied .person-icon { display: flex; }
+
+    .p-head {
+      width: calc(var(--uw) * 0.28);
+      height: calc(var(--uw) * 0.28);
+      background: white;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .p-body {
+      width: calc(var(--uw) * 0.62);
+      height: calc(var(--uw) * 0.58);
+      background: white;
+      border-radius: 2px 2px 4px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .person-letter {
+      font-size: calc(var(--uw) * 0.26);
+      font-weight: 800;
+      color: #111827;
+      line-height: 1;
+    }
+
+    .widget-footer {
+      display: flex;
+      align-items: center;
+      margin-top: 0.5rem;
+      position: relative;
+    }
+
+    .widget-status {
+      flex: 1;
+      text-align: center;
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      min-height: 1.3rem;
+    }
+
+    .widget-status strong { color: var(--text); }
+
+    .replay-btn {
+      position: absolute;
+      right: 0;
+      font-size: 1rem;
+      width: 30px;
+      height: 30px;
+      border: 1.5px solid var(--border);
+      border-radius: 50%;
+      background: var(--bg);
+      cursor: pointer;
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+      flex-shrink: 0;
+    }
+
+    .replay-btn:hover { border-color: var(--text-secondary); color: var(--text); }
+
+    /* Distance score overlay */
+    .dist-score {
+      display: none;
+      position: absolute;
+      inset: 0;
+      align-items: center;
+      justify-content: center;
+      font-size: calc(var(--uw) * 0.3);
+      font-weight: 700;
+      color: var(--text);
+      pointer-events: none;
+    }
+
+    .urinal-cell.scoring .dist-score { display: flex; }
+    .urinal-cell.scoring .urinal-body { background: #e8f0fe; border-color: #aac4f0; }
+    .urinal-cell.tied .dist-score { display: flex; }
+    .urinal-cell.tied .urinal-body { background: #fff3cd; border-color: #f0c040; }
+
+    [data-theme="dark"] .urinal-cell.scoring .urinal-body { background: #1a2a40; border-color: #3a5080; }
+    [data-theme="dark"] .urinal-cell.scoring .dist-score { color: var(--text); }
+    [data-theme="dark"] .urinal-cell.tied .urinal-body { background: #2a2010; border-color: #806020; }
+
+    /* Step-through next button */
+    .next-btn {
+      font-size: 0.85rem;
+      padding: 0.4rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg);
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 600;
+      transition: border-color 0.15s;
+    }
+    .next-btn:hover { border-color: var(--text-secondary); }
+    .next-btn:disabled { opacity: 0.4; cursor: default; }
+
+    .urinal-cell.clickable { cursor: pointer; }
+    .urinal-cell.clickable:hover .urinal-body {
+      border-color: var(--text-secondary);
+    }
+
+    .go-btn {
+      font-size: 0.82rem;
+      padding: 0.35rem 0.9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      background: var(--bg);
+      cursor: pointer;
+      color: var(--text);
+      font-weight: 700;
+      white-space: nowrap;
+      transition: border-color 0.15s, background 0.15s;
+      display: none;
+      flex-shrink: 0;
+    }
+
+    .go-btn:hover { border-color: var(--text-secondary); }
+
+    .widget-hint {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      text-align: center;
+      margin-bottom: 0.5rem;
+      min-height: 1.2rem;
+    }
+
+    /* SVG illustrations */
+    .svg-illustration {
+      margin: 1.75rem 0;
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1.5px solid var(--border);
+    }
+
+    .svg-illustration svg { display: block; width: 100%; }
+
+    /* Urinal illustration SVG classes */
+    .il-wall       { fill: #f8f8f8; }
+    .il-floor      { fill: #efefef; }
+    .il-floor-line { stroke: #ddd; }
+    .il-tile       { stroke: #ebebeb; fill: none; }
+    .il-urinal     { fill: white; stroke: #ccc; stroke-width: 1.5; }
+    .il-bowl       { fill: #f0f0f0; stroke: #ccc; stroke-width: 1; }
+    .il-pipe       { fill: #e0e0e0; stroke: #ccc; stroke-width: 1; }
+    .il-label      { fill: #bbb; font-family: "Lato", sans-serif; font-weight: 700; }
+    .il-person-body { fill: white; }
+    .il-person-head { fill: white; }
+    .il-person-letter { fill: #111827; }
+    .il-person-letter { fill: white; font-family: "Lato", sans-serif; font-weight: 800; }
+    .il-occupied   { fill: #111827; stroke: #111827; }
+    .il-halo          { fill: none; stroke: #F59E0B; stroke-width: 2; }
+    .il-occupied-green { fill: #16A34A; stroke: #16A34A; }
+    .il-occupied-red   { fill: #DC2626; stroke: #DC2626; }
+    .il-backplate  { fill: #ececec; stroke: none; }
+
+    [data-theme="dark"] .il-wall       { fill: #2a2a2a; }
+    [data-theme="dark"] .il-floor      { fill: #222; }
+    [data-theme="dark"] .il-floor-line { stroke: #444; }
+    [data-theme="dark"] .il-tile       { stroke: #333; }
+    [data-theme="dark"] .il-urinal     { fill: #555; stroke: #666; }
+    [data-theme="dark"] .il-bowl       { fill: #444; stroke: #555; }
+    [data-theme="dark"] .il-pipe       { fill: #444; stroke: #555; }
+    [data-theme="dark"] .il-label      { fill: #999; }
+    [data-theme="dark"] .il-person-body { fill: #e8eaf0; }
+    [data-theme="dark"] .il-person-head { fill: #e8eaf0; }
+    [data-theme="dark"] .il-occupied   { fill: #e8eaf0; stroke: #e8eaf0; }
+    [data-theme="dark"] .il-backplate  { fill: #3a3a3a; }
+
+    /* Stone tablet */
+    .il-stone       { fill: url(#stone-grad); stroke: #7a7868; stroke-width: 2; }
+    .il-stone-inner { fill: none; stroke: #d0cebb; stroke-width: 1; opacity: 0.5; }
+    .il-tablet-num  { fill: #f0ede0; font-family: "Lato", sans-serif; font-weight: 900; }
+    .il-tablet-head { fill: #f0ede0; font-family: "Lato", sans-serif; font-weight: 700; letter-spacing: 1px; }
+    .il-tablet-body { fill: #d4d0bc; font-family: "Lato", sans-serif; font-weight: 400; letter-spacing: 0.5px; }
+
+    [data-theme="dark"] .il-stone       { fill: #4a4840; stroke: #333028; }
+    [data-theme="dark"] .il-stone-inner { stroke: #6a6858; }
+    [data-theme="dark"] .il-tablet-num  { fill: #c8c4a8; }
+    [data-theme="dark"] .il-tablet-head { fill: #c0bc9c; }
+    [data-theme="dark"] .il-tablet-body { fill: #908c78; }
+
+    /* Slider widget */
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .slider-row label {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+      white-space: nowrap;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--text);
+      cursor: pointer;
+    }
+
+    .slider-val {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      min-width: 2ch;
+      text-align: right;
+    }
+  </style>
+</head>
+<body>
+<button class="theme-toggle" id="theme-toggle" title="Toggle dark mode"></button>
+<article class="post">
+
+  <h1>The Thirteen Urinal Dilemma</h1>
+
+  <p>Picture this. You walk into a public restroom, and you're faced with a row of thirteen empty urinals. Which one do you pick?</p>
+
+  <div class="svg-illustration" id="hook-image"></div>
+
+  <p>Turns out there's a correct answer to this question. Not an approximation — the exact, mathematically optimal spot to stand. Let's get into it.</p>
+
+  <h2>The Rules</h2>
+
+  <p>The rules of urinal etiquette are unwritten, and yet universally known to all men:</p>
+
+  <ul>
+    <li><strong>Rule 1 — Never take a urinal right next to someone.</strong> No exceptions, no excuses. This one is non-negotiable.</li>
+    <li><strong>Rule 2 — Otherwise, stand as far from the nearest person as you can.</strong> Give everyone as much space as possible.</li>
+    <li><strong>Rule 3 — If two spots are equally far, take the one with higher number.</strong> (Farther away from the door.)</li>
+  </ul>
+
+  <p>Okay. Let's see how this plays out in practice. Say there are six urinals:</p>
+
+  <div class="urinal-anim-widget" id="stepthrough-widget">
+    <div class="widget-label">Six urinals — step by step</div>
+    <div class="widget-hint" id="stepthrough-hint">Press Next to send in the first person.</div>
+    <div class="urinal-wrap">
+      <div class="urinal-row" id="stepthrough-row"></div>
+    </div>
+    <div class="widget-footer">
+      <div class="widget-status" id="stepthrough-status"></div>
+      <button class="next-btn" id="stepthrough-next" onclick="window.stepthroughNext()">Next →</button>
+      <button class="replay-btn" id="stepthrough-replay" style="display:none" onclick="window.stepthroughReset()">↺</button>
+    </div>
+  </div>
+
+  <p>Adam walks in first. There's nobody there yet, so Rules 1 and 2 have nothing to say — and Rule 3 just sends him straight to the back: urinal 6.</p>
+
+  <p>Bob comes in next. Farthest from Adam is the very front, so he takes urinal 1.</p>
+
+  <p>Then Carl shows up. Urinals 2 and 5 are off-limits — too close to someone. That leaves 3 and 4, which are both the same distance from the nearest person. Tie. Rule 3 settles it: urinal 4, farther from the door.</p>
+
+  <p>And that's it. Urinals 2, 3, and 5 are all adjacent to someone now, so Rule 1 kills them. Three people, three empty urinals, and we're done.</p>
+
+  <h2>How full does it get?</h2>
+
+  <p>As we can see, the room is full at just 50%. Let's give that number a name. The <strong>efficiency</strong> is how many urinals get used before nobody else can squeeze in.</p>
+
+  <p class="equation">\(6 \text{ urinals},\ 3 \text{ people} \implies 50\%\ \text{efficiency}\)</p>
+
+  <p>But try a different number of urinals, and things get strange.</p>
+
+  <ul>
+    <li><strong>Five urinals?</strong> Three people, 60% efficiency.</li>
+    <li><strong>Six urinals?</strong> Three people, 50% efficiency.</li>
+    <li><strong>Seven urinals?</strong> ... also three people, 43% efficiency.</li>
+  </ul>
+
+  <p>Five, six, or seven urinals — doesn't matter, same three people fit in, only the efficiency drops. If you want, you can play around with the simulator below to see how a room fills up depending on its size:</p>
+
+  <div class="urinal-anim-widget" id="anim-slider">
+    <div class="widget-label">Try any room size</div>
+    <div class="slider-row">
+      <label>Urinals:</label>
+      <input type="range" id="slider-n" min="2" max="25" value="13" oninput="window.sliderChange()">
+      <span class="slider-val" id="slider-val">13</span>
+    </div>
+    <div class="urinal-wrap">
+      <div class="urinal-row" id="slider-urinal-row"></div>
+      <div class="play-overlay" id="slider-overlay" onclick="window.runSlider()"><div class="play-btn-big">▶</div></div>
+    </div>
+    <div class="widget-footer">
+      <div class="widget-status" id="slider-status"></div>
+      <button class="replay-btn" id="slider-stop" style="display:none" onclick="window.stopSlider()">■</button>
+      <button class="replay-btn" id="slider-replay" style="display:none" onclick="window.resetSlider()">↺</button>
+    </div>
+  </div>
+
+  <p>And here's the plot of efficiency by room size, from 2 all the way up to 100 urinals:</p>
+
+  <div class="urinal-anim-widget" id="efficiency-graph-widget">
+    <div class="widget-label">Efficiency by room size (N=2 to 100)</div>
+    <svg id="efficiency-svg" width="100%" style="display:block;overflow:visible"></svg>
+    <div id="efficiency-tooltip" style="
+      display:none;
+      position:absolute;
+      background:var(--bg);
+      border:1.5px solid var(--border);
+      border-radius:6px;
+      padding:0.4rem 0.7rem;
+      font-size:0.8rem;
+      color:var(--text);
+      pointer-events:none;
+      white-space:nowrap;
+      box-shadow:0 2px 8px rgba(0,0,0,0.1);
+    "></div>
+  </div>
+
+  <p>As you can see, the efficiency goes down from 60% for N=5 all the way to 43% for N=7. Then eight and nine drag it back up. Then it drops again, all the way down to 38% for 13 urinals, then back up, and so on.</p>
+
+  <p>More urinals should mean more people served ... but they don't, not always. So ... how bad can this actually get?</p>
+
+  <h2>The best case and the worst case</h2>
+
+  <p>For a second, forget the one-by-one arrivals. Imagine everyone spawns in the room at once. What's the absolute most people you could ever fit? Easy — fill every other urinal. That's about half the room, rounded up, and you physically can't do better. Any fuller and two people are standing shoulder to shoulder.</p>
+
+  <p>So, half is the hard ceiling, the absolute best case. What about the worst case?</p>
+
+  <p>The worst the etiquette can leave you with is people spaced three urinals apart — two empty gaps between every pair. Only about a third of the room (~34%) gets used.</p>
+
+  <div class="svg-illustration" id="comparison-image"></div>
+
+  <p>Now, the question is: Are there specific restroom sizes that always hit the ceiling? And sizes that always hit the floor?</p>
+
+  <p>Yes. And they have a pattern — look for the green dots in the graph above.</p>
+
+  <p>The blessed sizes — the ones that always fill to the max — are:</p>
+
+  <p><strong>3, 5, 9, 17, 33, …</strong></p>
+
+  <p>Each number is just double the previous, minus one: 3 → 5 → 9 → 17 → 33.</p>
+
+  <details>
+    <summary>Why these sizes are optimal (warning: math inside)</summary>
+    <div class="toggle-content">
+      <p>We claim that all \(N = 2^k + 1\) (numbers 1 greater than some power of two) are optimal. Let's prove it:</p>
+      <p>After the first two people claim the ends, there is one gap (distance between two occupied urinals) of \(N - 1 = (2^k + 1) - 1 = 2^k\). Then, each new arrival fills the midpoint of the widest existing gap, splitting it into two equal halves of length \(2^{k-1}\).</p>
+      <p>This works cleanly at every step because the gap distance is always a power of 2 — and powers of 2 are always even, so the midpoint is always a whole number and the split is always perfectly equal, all the way down to gaps of length \(2^1 = 2\). At which point every other urinal is occupied (more specifically, \(\lceil n/2 \rceil\) urinals) and the optimal efficiency has been achieved.</p>
+    </div>
+  </details>
+
+  <p>And the cursed sizes — the ones that always sink to the worst case (red dots on the graph):</p>
+
+  <p><strong>4, 7, 13, 25, 49, …</strong></p>
+
+  <p>Again, we double the number and subtract 1: 4 → 7 → 13 → 25 → 49.</p>
+
+  <details>
+    <summary>Why these sizes are worst-case (warning: math inside)</summary>
+    <div class="toggle-content">
+      <p>We claim that all \(N = 3 \cdot 2^k + 1\) are worst-case. Let's prove it:</p>
+      <p>After the first two people claim the ends, there is one gap of \(N - 1 = 3 \cdot 2^k\). Each new arrival fills the midpoint of the widest gap, splitting it into two equal halves of length \(3 \cdot 2^{k-1}\).</p>
+      <p>Again, this halving works cleanly at every step because \(3 \cdot 2^k\) is always even. But this time the process ends at gaps of length \(3 \cdot 2^0 = 3\), not 2. A gap of distance 3 contains two empty urinals — but both are directly adjacent to a neighbor, so Rule 1 disallows both of them. Nobody else can squeeze in, and the room bottoms out at ~34% efficiency.</p>
+    </div>
+  </details>
+
+  <p>So, genuine public service announcement for anyone building a restroom: install 3, 5, 9, 17, or 33 urinals. If you can't do that, at least avoid even numbers. And never, ever, under any circumstances install 4, 7, 13, or 25 urinals. I'm serious.</p>
+
+  <h2>Saving the room</h2>
+
+  <p>Right. So thirteen is one of the cursed numbers, which brings us back to where we started.</p>
+
+  <p>Left on autopilot, this room serves five people when it could fit seven. Two strangers will walk in later, find nowhere to stand, and have to leave. And it's partly your fault — you pick first, and your spot sets the whole thing in motion.</p>
+
+  <p>Can you actually fix this?</p>
+
+  <div class="urinal-anim-widget" id="anim-place">
+    <div class="widget-label">Where do you stand?</div>
+    <div class="widget-hint">Click any urinal to place yourself.</div>
+    <div class="urinal-wrap">
+      <div class="urinal-row"></div>
+    </div>
+    <div class="widget-footer">
+      <div class="widget-status"></div>
+      <button class="go-btn" id="go-btn-place" onclick="window.runPlace()">Let etiquette decide →</button>
+      <button class="replay-btn" style="display:none" onclick="window.resetPlace()">↺</button>
+    </div>
+  </div>
+
+  <p>The obvious move is to stand dead center — urinal 7. You're splitting the room into two halves of five urinals each, and five is a blessed number, so ... it should work, right?</p>
+
+  <p>It doesn't. The two "halves" were never actually separate — everyone is still spacing off you and off each other. The room settles back into the same sparse five-person pattern it was cursed with.</p>
+
+  <p>So, what <em>is</em> the solution?</p>
+
+  <p>Turns out, the move that works is the one that looks wrong ... or at least weird. Don't stand at either end, and don't stand in the middle. Stand at urinal 9.</p>
+
+  <p>The room is now lopsided, and that's exactly the trick. The next people fill in at 1, then 13, then 5 — suddenly you've got people at 1, 5, 9, and 13, evenly spaced every four urinals. Each of those three gaps takes exactly one more person — at 11, 7, and 3. Seven people served — the best-case ceiling of ~50% we saw earlier, and the absolute maximum for any 13-urinal room. You turned the worst possible room into a perfect one, and nobody else had to do anything differently.</p>
+
+  <h2>Conclusion</h2>
+
+  <p>So, what's the solution to the thirteen urinal dilemma?</p>
+
+  <p>As it turns out, just one person thinking past themselves turns the worst-case scenario into a perfect one. Everyone else acts "selfishly" — and yet, somehow, the room fills out perfectly.</p>
+
+  <div class="svg-illustration" id="conclusion-image"></div>
+
+  <p>Anyway. Next time you walk into a restroom, you now know more about it than you'll ever need to. And who knows, you might just save the room.</p>
+
+  <div class="signoff">
+    <p>See you around,<br>Martin</p>
+  </div>
+
+</article>
+
+<script>
+  // Theme toggle
+  (function () {
+    const MOON = `<svg viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M6 2a6 6 0 1 0 8 8 4.5 4.5 0 1 1-8-8z"/></svg>`;
+    const SUN  = `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" xmlns="http://www.w3.org/2000/svg"><circle cx="8" cy="8" r="2.8"/><line x1="8" y1="1" x2="8" y2="3.2"/><line x1="8" y1="12.8" x2="8" y2="15"/><line x1="1" y1="8" x2="3.2" y2="8"/><line x1="12.8" y1="8" x2="15" y2="8"/><line x1="2.9" y1="2.9" x2="4.5" y2="4.5"/><line x1="11.5" y1="11.5" x2="13.1" y2="13.1"/><line x1="13.1" y1="2.9" x2="11.5" y2="4.5"/><line x1="4.5" y1="11.5" x2="2.9" y2="13.1"/></svg>`;
+
+    const btn = document.getElementById('theme-toggle');
+    const saved = localStorage.getItem('theme');
+    if (saved === 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+      btn.innerHTML = SUN;
+    } else {
+      btn.innerHTML = MOON;
+    }
+    btn.addEventListener('click', () => {
+      const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+      if (isDark) {
+        document.documentElement.removeAttribute('data-theme');
+        btn.innerHTML = MOON;
+        localStorage.setItem('theme', 'light');
+      } else {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        btn.innerHTML = SUN;
+        localStorage.setItem('theme', 'dark');
+      }
+      // Rebuild graph so colors update
+      requestAnimationFrame(() => {
+        window.buildEfficiencyGraph && window.buildEfficiencyGraph();
+        window.buildHookImage && window.buildHookImage();
+        window.buildSmallComparisonImage && window.buildSmallComparisonImage();
+        window.buildComparisonImage && window.buildComparisonImage();
+        window.buildDoorwayCallbackImage && window.buildDoorwayCallbackImage();
+        window.buildConclusionImage && window.buildConclusionImage();
+        window.buildAllIllustrations && window.buildAllIllustrations();
+        window.buildAllIllustrations && window.buildAllIllustrations();
+      });
+    });
+  })();
+</script>
+
+<script>
+(function () {
+
+  function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function computeSequence(n, start) {
+    const occupied = [start];
+    const seq = [start];
+    for (;;) {
+      const candidates = [];
+      for (let i = 1; i <= n; i++) {
+        if (occupied.includes(i)) continue;
+        if (occupied.some(p => Math.abs(p - i) === 1)) continue; // Rule 1
+        candidates.push(i);
+      }
+      if (!candidates.length) break;
+      // Rule 2: max distance to nearest occupied
+      const scored = candidates.map(i => ({
+        i,
+        d: Math.min(...occupied.map(p => Math.abs(p - i)))
+      }));
+      const maxD = Math.max(...scored.map(s => s.d));
+      const best = scored.filter(s => s.d === maxD).map(s => s.i);
+      // Rule 3: farthest from door = highest position number
+      occupied.push(Math.max(...best));
+      seq.push(Math.max(...best));
+    }
+    return seq;
+  }
+
+  function initWidget(id, n) {
+    const widget = document.getElementById(id);
+    if (!widget) return;
+    const row = widget.querySelector('.urinal-row');
+    row.innerHTML = '';
+    for (let i = 1; i <= n; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'urinal-cell empty';
+      cell.id = `${id}-c${i}`;
+      cell.innerHTML = `<span class="unum">${i}</span><div class="urinal-body"><div class="person-icon"><div class="p-head"></div><div class="p-body"><span class="person-letter"></span></div></div></div>`;
+      row.appendChild(cell);
+    }
+    widget.querySelector('.widget-status').textContent = '';
+  }
+
+  function setCell(id, pos, state) {
+    const el = document.getElementById(`${id}-c${pos}`);
+    if (el) el.className = `urinal-cell ${state}`;
+  }
+
+  async function runAnim(id, n, start) {
+    initWidget(id, n);
+    const widget = document.getElementById(id);
+    const statusEl = widget.querySelector('.widget-status');
+    const names = ['Adam','Bob','Chris','David','Ethan','Frank','George','Henry','Ivan','Jack','Karl','Leo','Mike'];
+    const seq = computeSequence(n, start);
+    const occupied = [];
+
+    await sleep(500);
+
+    for (let step = 0; step < seq.length; step++) {
+      const pos = seq[step];
+
+      setCell(id, pos, 'choosing');
+      statusEl.textContent = `${names[step]} picks urinal ${pos}.`;
+      await sleep(650);
+
+      setCell(id, pos, 'occupied');
+      const letterEl = document.querySelector(`#${id}-c${pos} .person-letter`);
+      if (letterEl) letterEl.textContent = names[step][0];
+      occupied.push(pos);
+      await sleep(300);
+
+      // Update all non-occupied cells
+      for (let i = 1; i <= n; i++) {
+        if (!occupied.includes(i)) {
+          const blocked = occupied.some(p => Math.abs(p - i) === 1);
+          setCell(id, i, blocked ? 'blocked' : 'empty');
+        }
+      }
+
+      await sleep(600);
+    }
+
+    const pct = Math.round(seq.length / n * 100);
+    statusEl.innerHTML = `${seq.length} of ${n} urinals used = <strong>${pct}% efficiency</strong>`;
+  }
+
+  // === SVG Illustrations ===
+
+  // Draw a row of N urinals. occupied = array of positions (1-based).
+  // letterAt = {pos: letter} for person letters. haloAt = position number for halo.
+  function drawUrinal(cx, yTop, uw, uh, isOcc, letter, hasHalo, occClass) {
+    const x = cx - uw / 2;
+    const urinalClass = isOcc ? (occClass || 'il-occupied') : 'il-urinal';
+
+    // Tapered shape: wider at bottom than top
+    const topW  = uw * 0.80;
+    const botW  = uw;
+    const taper = (botW - topW) / 2;
+    const r = 3;
+
+    // Back plate (slightly wider, flush to wall)
+    const plateW = uw + 6;
+    let html = `<rect x="${cx - plateW/2}" y="${yTop}" width="${plateW}" height="${uh - 10}" rx="2" class="il-backplate" filter="url(#urinal-shadow)"/>`;
+
+    // Tapered basin body using path
+    const tx = cx - topW / 2;
+    const bx = cx - botW / 2;
+    const ty = yTop + 4;
+    const by = yTop + uh - 12;
+    html += `<path d="
+      M ${tx + r},${ty}
+      L ${tx + topW - r},${ty}
+      Q ${tx + topW},${ty} ${tx + topW},${ty + r}
+      L ${bx + botW},${by}
+      Q ${bx + botW},${by + r} ${bx + botW - r},${by + r}
+      L ${bx + r},${by + r}
+      Q ${bx},${by + r} ${bx},${by}
+      L ${tx},${ty + r}
+      Q ${tx},${ty} ${tx + r},${ty}
+      Z" class="${urinalClass}"/>`;
+
+    // Pipe
+    html += `<rect x="${cx - 3}" y="${yTop + uh - 10}" width="6" height="8" rx="1" class="il-pipe"/>`;
+
+    // Person icon — anchored to bottom of urinal
+    if (isOcc) {
+      const floorY  = yTop + uh - 14; // just above the pipe
+      const headR   = uw * 0.22;
+      const bodyW   = uw * 0.58;
+      const bodyH   = (floorY - ty) * 0.62;
+      const bodyY   = floorY - bodyH;
+      const headCY  = bodyY - headR - 2;
+      html += `<circle cx="${cx}" cy="${headCY}" r="${headR}" class="il-person-head"/>`;
+      html += `<rect x="${cx - bodyW/2}" y="${bodyY}" width="${bodyW}" height="${bodyH}" rx="2" class="il-person-body"/>`;
+      if (letter) {
+        html += `<text x="${cx}" y="${bodyY + bodyH/2 + 3.5}" text-anchor="middle" font-size="${Math.max(6, uw * 0.22)}" font-weight="800" class="il-person-letter">${letter}</text>`;
+      }
+      if (hasHalo) {
+        html += `<circle cx="${cx}" cy="${headCY}" r="${headR + 5}" class="il-halo"/>`;
+      }
+    }
+
+    return html;
+  }
+
+  function drawUrinalRow(occupied, n, letterAt, haloAt) {
+    const VW = 680, VH = 160;
+    const WALL_H = 125, FLOOR_H = 35;
+    const UW = Math.min(42, Math.floor((VW - 20) / n) - 4);
+    const UH = Math.round(UW * 2.4);
+    const PITCH = VW / n;
+    const Y_TOP = Math.round((WALL_H - UH) / 2) + 8;
+
+    let html = `<svg viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg">`;
+
+    // Shadow filter
+    html += `<defs>
+      <filter id="urinal-shadow" x="-10%" y="-5%" width="120%" height="120%">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#00000018"/>
+      </filter>
+    </defs>`;
+
+    html += `<rect x="0" y="0" width="${VW}" height="${WALL_H}" class="il-wall"/>`;
+    html += `<rect x="0" y="${WALL_H}" width="${VW}" height="${FLOOR_H}" class="il-floor"/>`;
+    html += `<line x1="0" y1="${WALL_H}" x2="${VW}" y2="${WALL_H}" stroke-width="1" class="il-floor-line"/>`;
+    html += `<line x1="0" y1="${WALL_H * 0.5}" x2="${VW}" y2="${WALL_H * 0.5}" stroke-width="0.8" class="il-tile"/>`;
+
+    for (let i = 1; i <= n; i++) {
+      const cx = (i - 0.5) * PITCH;
+      const isOcc   = occupied && occupied.includes(i);
+      const letter  = letterAt ? letterAt[i] : null;
+      const hasHalo = haloAt === i;
+
+      // Number label
+      const labelColor = isOcc ? '' : '';
+      html += `<text x="${cx}" y="${Y_TOP - 4}" text-anchor="middle" font-size="11" font-weight="700" class="il-label">${i}</text>`;
+      html += drawUrinal(cx, Y_TOP, UW, UH, isOcc, letter, hasHalo);
+    }
+
+    html += `</svg>`;
+    return html;
+  }
+
+  function buildRulesImage() {
+    const el = document.getElementById('rules-image');
+    if (!el) return;
+
+    const VW = 680, VH = 250;
+    const TW = 170, AR = 85; // tablet width, arch radius
+    const TH = 210; // total tablet height
+    const Y_BOTTOM = 240;
+    const Y_TOP = Y_BOTTOM - TH;
+
+    const tablets = [
+      {
+        num: 'I',
+        head: ['NEVER TAKE A URINAL', 'RIGHT NEXT TO SOMEONE.'],
+        body: ['There is always a buffer.', 'This one is sacred.']
+      },
+      {
+        num: 'II',
+        head: ['STAND AS FAR FROM THE', 'NEAREST PERSON AS YOU CAN.'],
+        body: ['Spread out.', 'Maximize the gap.']
+      },
+      {
+        num: 'III',
+        head: ['ON A TIE, TAKE THE SPOT', 'FARTHEST FROM THE DOOR.'],
+        body: ['Deeper in, more private,', 'less traffic.']
+      }
+    ];
+
+    const positions = [VW / 6, VW / 2, VW * 5 / 6];
+
+    let html = `<svg viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="stone-grad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#c8c4b0"/>
+          <stop offset="60%" stop-color="#a8a490"/>
+          <stop offset="100%" stop-color="#888470"/>
+        </linearGradient>
+        <filter id="tablet-shadow">
+          <feDropShadow dx="2" dy="5" stdDeviation="5" flood-color="#00000028"/>
+        </filter>
+      </defs>
+      <rect width="${VW}" height="${VH}" class="il-wall"/>`;
+
+    positions.forEach((cx, idx) => {
+      const t = tablets[idx];
+      const x = cx - TW / 2;
+
+      // Tablet shape: arched top
+      const path = `M ${x},${Y_BOTTOM} L ${x},${Y_TOP + AR} A ${AR},${AR} 0 0,1 ${x + TW},${Y_TOP + AR} L ${x + TW},${Y_BOTTOM} Z`;
+      const innerPath = `M ${x+4},${Y_BOTTOM-4} L ${x+4},${Y_TOP + AR} A ${AR-4},${AR-4} 0 0,1 ${x + TW - 4},${Y_TOP + AR} L ${x + TW - 4},${Y_BOTTOM - 4} Z`;
+
+      html += `<path d="${path}" class="il-stone" filter="url(#tablet-shadow)"/>`;
+      html += `<path d="${innerPath}" class="il-stone-inner"/>`;
+
+      // Roman numeral
+      html += `<text x="${cx}" y="${Y_TOP + AR + 28}" text-anchor="middle" font-size="24" class="il-tablet-num">${t.num}</text>`;
+
+      // Divider line
+      html += `<line x1="${cx - 50}" y1="${Y_TOP + AR + 38}" x2="${cx + 50}" y2="${Y_TOP + AR + 38}" stroke="#c0bc9c" stroke-width="0.8" opacity="0.6"/>`;
+
+      // Headline lines
+      let y = Y_TOP + AR + 58;
+      t.head.forEach(line => {
+        html += `<text x="${cx}" y="${y}" text-anchor="middle" font-size="9.5" class="il-tablet-head">${line}</text>`;
+        y += 15;
+      });
+
+    });
+
+    html += `</svg>`;
+    el.innerHTML = html;
+  }
+
+  function buildHookImage() {
+    const el = document.getElementById('hook-image');
+    if (!el) return;
+    el.innerHTML = drawUrinalRow([], 13);
+  }
+
+  // Draw a single row's SVG content at a given y-offset (no wrapper)
+  function drawRowContent(occupied, n, yOffset, uw, uh, pitch, wallH, letterAt, haloAt, occClass) {
+    let html = '';
+    const Y_TOP = yOffset + Math.round((wallH - uh) / 2) + 8;
+
+    for (let i = 1; i <= n; i++) {
+      const cx = (i - 0.5) * pitch;
+      const isOcc = occupied && occupied.includes(i);
+      const letter  = letterAt ? letterAt[i] : null;
+      const hasHalo = haloAt === i;
+      html += `<text x="${cx}" y="${Y_TOP - 4}" text-anchor="middle" font-size="11" font-weight="700" class="il-label">${i}</text>`;
+      html += drawUrinal(cx, Y_TOP, uw, uh, isOcc, letter, hasHalo, occClass);
+    }
+    return html;
+  }
+
+  function buildComparisonImage() {
+    const el = document.getElementById('comparison-image');
+    if (!el) return;
+
+    const VW = 680;
+    const LABEL_H  = 28;  // space for label above each row
+    const SUBLABEL_H = 26; // space for label below each row
+    const ROW_H    = 140; // wall + floor height per row
+    const FLOOR_H  = 22;
+    const GAP      = 20;  // gap between the two sections
+    const VH = LABEL_H + ROW_H + SUBLABEL_H + GAP + LABEL_H + ROW_H + SUBLABEL_H;
+
+    const UW = Math.min(36, Math.floor((VW - 20) / 13) - 4);
+    const UH = Math.round(UW * 2.2);
+    const PITCH = VW / 13;
+    const WALL_H = ROW_H - FLOOR_H;
+
+    function drawSection(yBase, topLabel, bottomLabel, occupied, occClass) {
+      let h = '';
+      const yWall  = yBase + LABEL_H;
+      const yFloor = yWall + WALL_H;
+
+      // Top label
+      h += `<text x="${VW/2}" y="${yBase + 18}" text-anchor="middle" font-size="13" font-weight="700" font-family="Lato,sans-serif" letter-spacing="1.5" class="il-label">${topLabel}</text>`;
+
+      // Wall only (no floor)
+      h += `<rect x="0" y="${yWall}" width="${VW}" height="${WALL_H}" class="il-wall"/>`;
+      h += `<line x1="0" y1="${yWall + WALL_H/2}" x2="${VW}" y2="${yWall + WALL_H/2}" stroke-width="0.8" class="il-tile"/>`;
+
+      // Urinals
+      h += drawRowContent(occupied, 13, yWall, UW, UH, PITCH, WALL_H, null, null, occClass);
+
+      // Bottom label
+      h += `<text x="${VW/2}" y="${yFloor + 18}" text-anchor="middle" font-size="14" font-weight="700" font-family="Lato,sans-serif" class="il-label">${bottomLabel}</text>`;
+
+      return h;
+    }
+
+    let html = `<svg viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="urinal-shadow">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#00000018"/>
+      </filter></defs>`;
+
+    html += drawSection(0,                                      'BEST CASE SCENARIO',  '7 of 13 = 54% efficiency', [1,3,5,7,9,11,13], 'il-occupied-green');
+    html += drawSection(LABEL_H + ROW_H + SUBLABEL_H + GAP,   'WORST CASE SCENARIO', '5 of 13 = 38% efficiency', [1,4,7,10,13],      'il-occupied-red');
+
+    html += `</svg>`;
+    el.innerHTML = html;
+  }
+
+  function buildSmallComparisonImage() {
+    const el = document.getElementById('small-comparison-image');
+    if (!el) return;
+
+    const VW = 680;
+    const LABEL_H = 26;
+    const ROW_H   = 130;
+    const FLOOR_H = 20;
+    const GAP     = 12;
+    const WALL_H  = ROW_H - FLOOR_H;
+    const VH = 3 * (LABEL_H + ROW_H) + 2 * GAP;
+
+    const rows = [
+      { n: 5, occupied: [1, 3, 5] },
+      { n: 6, occupied: [1, 4, 6] },
+      { n: 7, occupied: [1, 4, 7] },
+    ];
+
+    let html = `<svg viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="urinal-shadow">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#00000018"/>
+      </filter></defs>`;
+
+    rows.forEach((row, idx) => {
+      const yBase  = idx * (LABEL_H + ROW_H + GAP);
+      const yWall  = yBase + LABEL_H;
+      const yFloor = yWall + WALL_H;
+      const PITCH  = VW / row.n;
+      const UW = Math.min(52, Math.floor((VW - 20) / row.n) - 6);
+      const UH = Math.round(UW * 2.2);
+
+      // Label left + "3 people" right
+      html += `<text x="${VW/2}" y="${yBase + 17}" text-anchor="middle" font-size="11" font-weight="700" font-family="Lato,sans-serif" letter-spacing="1" class="il-label">${row.n} URINALS — 3 PEOPLE</text>`;
+
+      // Wall + floor
+      html += `<rect x="0" y="${yWall}" width="${VW}" height="${WALL_H}" class="il-wall"/>`;
+      html += `<rect x="0" y="${yFloor}" width="${VW}" height="${FLOOR_H}" class="il-floor"/>`;
+      html += `<line x1="0" y1="${yFloor}" x2="${VW}" y2="${yFloor}" stroke-width="1" class="il-floor-line"/>`;
+      html += `<line x1="0" y1="${yWall + WALL_H/2}" x2="${VW}" y2="${yWall + WALL_H/2}" stroke-width="0.8" class="il-tile"/>`;
+
+      html += drawRowContent(row.occupied, row.n, yWall, UW, UH, PITCH, WALL_H);
+    });
+
+    html += `</svg>`;
+    el.innerHTML = html;
+  }
+
+  function buildDoorwayCallbackImage() {
+    const el = document.getElementById('doorway-callback-image');
+    if (!el) return;
+    el.innerHTML = drawUrinalRow([], 13);
+  }
+
+  function buildConclusionImage() {
+    const el = document.getElementById('conclusion-image');
+    if (!el) return;
+
+    const VW = 680;
+    const LABEL_H  = 28;
+    const SUBLABEL_H = 26;
+    const ROW_H    = 140;
+    const FLOOR_H  = 22;
+    const GAP      = 20;
+    const WALL_H   = ROW_H - FLOOR_H;
+    const VH = LABEL_H + ROW_H + SUBLABEL_H + GAP + LABEL_H + ROW_H + SUBLABEL_H;
+
+    const UW = Math.min(36, Math.floor((VW - 20) / 13) - 4);
+    const UH = Math.round(UW * 2.2);
+    const PITCH = VW / 13;
+
+    function drawSection(yBase, topLabel, bottomLabel, occupied, occClass, youAt) {
+      let h = '';
+      const yWall  = yBase + LABEL_H;
+      const yFloor = yWall + WALL_H;
+
+      h += `<text x="${VW/2}" y="${yBase + 18}" text-anchor="middle" font-size="13" font-weight="700" font-family="Lato,sans-serif" letter-spacing="1.5" class="il-label">${topLabel}</text>`;
+      h += `<rect x="0" y="${yWall}" width="${VW}" height="${WALL_H}" class="il-wall"/>`;
+      h += `<line x1="0" y1="${yWall + WALL_H/2}" x2="${VW}" y2="${yWall + WALL_H/2}" stroke-width="0.8" class="il-tile"/>`;
+
+      for (let i = 1; i <= 13; i++) {
+        const cx = (i - 0.5) * PITCH;
+        const Y_TOP = yWall + Math.round((WALL_H - UH) / 2) + 8;
+        const isOcc = occupied.includes(i);
+        const isYou = i === youAt;
+        const oc = isYou ? 'il-occupied-green' : occClass;
+        h += `<text x="${cx}" y="${Y_TOP - 4}" text-anchor="middle" font-size="11" font-weight="700" class="il-label">${i}</text>`;
+        h += drawUrinal(cx, Y_TOP, UW, UH, isOcc, isYou ? 'Y' : null, false, oc);
+      }
+
+      h += `<text x="${VW/2}" y="${yFloor + 20}" text-anchor="middle" font-size="14" font-weight="700" font-family="Lato,sans-serif" class="il-label">${bottomLabel}</text>`;
+      return h;
+    }
+
+    let html = `<svg viewBox="0 0 ${VW} ${VH}" xmlns="http://www.w3.org/2000/svg">
+      <defs><filter id="urinal-shadow">
+        <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#00000018"/>
+      </filter></defs>`;
+
+    html += drawSection(0,                                    'WITHOUT YOU', '5 of 13 = 38% efficiency', [1,4,7,10,13], 'il-occupied-red',   null);
+    html += drawSection(LABEL_H + ROW_H + SUBLABEL_H + GAP, 'WITH YOU', '7 of 13 = 54% efficiency', [1,3,5,7,9,11,13], 'il-occupied-green', 9);
+
+    html += `</svg>`;
+    el.innerHTML = html;
+  }
+
+  window.buildComparisonImage = buildComparisonImage;
+  window.buildDoorwayCallbackImage = buildDoorwayCallbackImage;
+  window.buildConclusionImage = buildConclusionImage;
+
+  window.buildHookImage = buildHookImage;
+  // === End SVG Illustrations ===
+
+  // === Six-urinal step-through ===
+  const ST_N = 6;
+  const ST_NAMES = ['Adam', 'Bob', 'Carl'];
+  // Verified sequence: 6, 1, 4
+  const ST_SEQ = [6, 1, 4];
+  let stStep = 0;
+  let stOccupied = [];
+  let stBusy = false;
+
+  function stBuildRow() {
+    const row = document.getElementById('stepthrough-row');
+    row.innerHTML = '';
+    // Use fixed urinal size for this widget
+    row.style.setProperty('--uw', '52px');
+    row.style.setProperty('--uh', '70px');
+    row.style.setProperty('--ug', '8px');
+    for (let i = 1; i <= ST_N; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'urinal-cell empty';
+      cell.id = `st-c${i}`;
+      cell.innerHTML = `
+        <span class="unum">${i}</span>
+        <div class="urinal-body">
+          <div class="person-icon">
+            <div class="p-head"></div>
+            <div class="p-body"><span class="person-letter"></span></div>
+          </div>
+          <span class="dist-score"></span>
+        </div>`;
+      row.appendChild(cell);
+    }
+  }
+
+  function stSetCell(pos, state, score) {
+    const cell = document.getElementById(`st-c${pos}`);
+    if (!cell) return;
+    cell.className = `urinal-cell ${state}`;
+    const ds = cell.querySelector('.dist-score');
+    if (ds) ds.textContent = score !== undefined ? score : '';
+  }
+
+  function stSetLetter(pos, letter) {
+    const el = document.querySelector(`#st-c${pos} .person-letter`);
+    if (el) el.textContent = letter;
+  }
+
+  function stUpdateBlocked() {
+    for (let i = 1; i <= ST_N; i++) {
+      if (!stOccupied.includes(i)) {
+        const blocked = stOccupied.some(p => Math.abs(p - i) === 1);
+        if (blocked) stSetCell(i, 'blocked');
+      }
+    }
+  }
+
+  let stResolveNext = null;
+
+  function stWaitForNext() {
+    const nextBtn = document.getElementById('stepthrough-next');
+    nextBtn.disabled = false;
+    return new Promise(resolve => { stResolveNext = resolve; });
+  }
+
+  window.stepthroughNext = async function () {
+    // If a sub-step is waiting, advance it
+    if (stResolveNext) {
+      const resolve = stResolveNext;
+      stResolveNext = null;
+      document.getElementById('stepthrough-next').disabled = true;
+      resolve();
+      return;
+    }
+
+    if (stBusy || stStep >= ST_SEQ.length) return;
+    stBusy = true;
+
+    const statusEl  = document.getElementById('stepthrough-status');
+    const hintEl    = document.getElementById('stepthrough-hint');
+    const nextBtn   = document.getElementById('stepthrough-next');
+    const replayBtn = document.getElementById('stepthrough-replay');
+    nextBtn.disabled = true;
+
+    // Clear previous text immediately
+    statusEl.textContent = '';
+    hintEl.textContent = '';
+
+    const name = ST_NAMES[stStep];
+    const pos  = ST_SEQ[stStep];
+
+    if (stStep === 0) {
+      hintEl.textContent = 'No one here yet — Rule 3 sends the first person to the back.';
+      await stWaitForNext();
+    } else {
+      // Show distance scores
+      hintEl.textContent = 'Each number is the distance to the nearest person.';
+      const available = [];
+      const scores = {};
+      for (let i = 1; i <= ST_N; i++) {
+        if (stOccupied.includes(i)) continue;
+        if (stOccupied.some(p => Math.abs(p - i) === 1)) continue;
+        const dist = Math.min(...stOccupied.map(p => Math.abs(p - i)));
+        scores[i] = dist;
+        available.push(i);
+      }
+
+      const maxDist = Math.max(...available.map(i => scores[i]));
+      const tied = available.filter(i => scores[i] === maxDist);
+
+      for (const i of available) stSetCell(i, 'scoring', scores[i]);
+      await stWaitForNext();
+
+      if (tied.length > 1) {
+        hintEl.textContent = 'Tie! Rule 3 picks the one farther from the door.';
+        for (const i of tied) stSetCell(i, 'tied', scores[i]);
+        await stWaitForNext();
+      }
+    }
+
+    // Choose — automatic, no click needed
+    stSetCell(pos, 'choosing', '');
+    hintEl.textContent = '';
+    await sleep(500);
+
+    // Place person + status
+    stSetCell(pos, 'occupied');
+    stSetLetter(pos, name[0]);
+    hintEl.textContent = `${name} picks urinal ${pos}.`;
+    stOccupied.push(pos);
+    await sleep(400);
+
+    // Reset non-occupied, then block adjacent
+    for (let i = 1; i <= ST_N; i++) {
+      if (!stOccupied.includes(i)) stSetCell(i, 'empty');
+    }
+    stUpdateBlocked();
+
+    stStep++;
+
+    if (stStep >= ST_SEQ.length) {
+      hintEl.textContent = 'Room full — no legal spots left.';
+      nextBtn.style.display = 'none';
+      replayBtn.style.display = 'flex';
+    } else {
+      nextBtn.disabled = false;
+    }
+
+    stBusy = false;
+  };
+
+  window.stepthroughReset = function () {
+    stStep = 0;
+    stOccupied = [];
+    stBusy = false;
+    stResolveNext = null;
+    stBuildRow();
+    document.getElementById('stepthrough-status').textContent = '';
+    document.getElementById('stepthrough-hint').textContent = 'Press Next to send in the first person.';
+    document.getElementById('stepthrough-next').style.display = '';
+    document.getElementById('stepthrough-next').disabled = false;
+    document.getElementById('stepthrough-replay').style.display = 'none';
+  };
+  // === End six-urinal step-through ===
+
+  // === Efficiency graph ===
+  // Pre-compute data once
+  const GRAPH_DATA = [];
+  for (let n = 2; n <= 100; n++) {
+    const seq = computeSequence(n, n);
+    GRAPH_DATA.push({ n, people: seq.length, pct: seq.length / n });
+  }
+  const BLESSED = new Set([3,5,9,17,33,65]);
+  const CURSED  = new Set([4,7,13,25,49,97]);
+
+  function buildEfficiencyGraph() {
+    const svg = document.getElementById('efficiency-svg');
+    const tooltip = document.getElementById('efficiency-tooltip');
+    if (!svg) return;
+
+    const W = Math.max(300, (svg.closest('.urinal-anim-widget').clientWidth || 600) - 48);
+    const H = 220;
+    const PAD = { top: 20, right: 16, bottom: 44, left: 46 };
+    const plotW = W - PAD.left - PAD.right;
+    const plotH = H - PAD.top - PAD.bottom;
+
+    // Tighter y-axis: 30% to 70%
+    const Y_MIN = 0.30, Y_MAX = 0.70;
+
+    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
+    svg.setAttribute('height', H);
+
+    function xPos(n)   { return PAD.left + ((n - 2) / 98) * plotW; }
+    function yPos(pct) { return PAD.top + (1 - (pct - Y_MIN) / (Y_MAX - Y_MIN)) * plotH; }
+
+    // Read CSS variables for colors — so graph respects current theme
+    const cs = getComputedStyle(document.documentElement);
+    const textCol    = cs.getPropertyValue('--text').trim();
+    const secCol     = cs.getPropertyValue('--text-secondary').trim();
+    const borderCol  = cs.getPropertyValue('--border').trim();
+    const bgCol      = cs.getPropertyValue('--bg').trim();
+    const isDark     = document.documentElement.getAttribute('data-theme') === 'dark';
+    const lineCol    = isDark ? '#cccccc' : '#222222';
+
+    let html = '';
+
+    // Horizontal grid lines at meaningful efficiency levels
+    [30, 40, 50, 60, 70].forEach(pct => {
+      const y = yPos(pct / 100);
+      if (y < PAD.top || y > PAD.top + plotH) return;
+      html += `<line x1="${PAD.left}" y1="${y}" x2="${PAD.left + plotW}" y2="${y}" stroke="${borderCol}" stroke-width="1"/>`;
+      html += `<text x="${PAD.left - 6}" y="${y + 4}" text-anchor="end" font-size="10" fill="${secCol}">${pct}%</text>`;
+    });
+
+    // X axis baseline
+    html += `<line x1="${PAD.left}" y1="${PAD.top + plotH}" x2="${PAD.left + plotW}" y2="${PAD.top + plotH}" stroke="${borderCol}" stroke-width="1"/>`;
+
+    // X axis tick labels
+    [2, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100].forEach(n => {
+      const x = xPos(n);
+      html += `<line x1="${x}" y1="${PAD.top + plotH}" x2="${x}" y2="${PAD.top + plotH + 4}" stroke="${secCol}" stroke-width="1"/>`;
+      html += `<text x="${x}" y="${PAD.top + plotH + 15}" text-anchor="middle" font-size="10" fill="${secCol}">${n}</text>`;
+    });
+
+    // X axis label
+    html += `<text x="${PAD.left + plotW / 2}" y="${H - 4}" text-anchor="middle" font-size="11" fill="${secCol}">Number of urinals</text>`;
+
+    // Line path
+    const points = GRAPH_DATA.map(d => `${xPos(d.n)},${yPos(d.pct)}`).join(' ');
+    html += `<polyline points="${points}" fill="none" stroke="${lineCol}" stroke-width="2" stroke-linejoin="round"/>`;
+
+    // Blessed dots (green)
+    GRAPH_DATA.filter(d => BLESSED.has(d.n)).forEach(d => {
+      html += `<circle cx="${xPos(d.n)}" cy="${yPos(d.pct)}" r="5" fill="#16A34A"/>`;
+    });
+
+    // Cursed dots (red)
+    GRAPH_DATA.filter(d => CURSED.has(d.n)).forEach(d => {
+      html += `<circle cx="${xPos(d.n)}" cy="${yPos(d.pct)}" r="5" fill="#DC2626"/>`;
+    });
+
+    // Hover targets
+    GRAPH_DATA.forEach(d => {
+      const x = xPos(d.n);
+      const label = BLESSED.has(d.n) ? ' · blessed' : CURSED.has(d.n) ? ' · cursed' : '';
+      html += `<rect x="${x - 6}" y="${PAD.top}" width="12" height="${plotH}"
+        fill="transparent" data-n="${d.n}" data-people="${d.people}"
+        data-pct="${Math.round(d.pct * 100)}" data-label="${label}" class="graph-hover"/>`;
+    });
+
+    svg.innerHTML = html;
+
+    // Hover dot (always on top)
+    const hoverDot = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    hoverDot.setAttribute('r', '4');
+    hoverDot.setAttribute('fill', bgCol);
+    hoverDot.setAttribute('stroke', lineCol);
+    hoverDot.setAttribute('stroke-width', '2');
+    hoverDot.style.display = 'none';
+    hoverDot.style.pointerEvents = 'none';
+    svg.appendChild(hoverDot);
+
+    const widget = svg.closest('.urinal-anim-widget');
+    widget.style.position = 'relative';
+
+    svg.querySelectorAll('.graph-hover').forEach(rect => {
+      rect.addEventListener('mouseenter', () => {
+        const n = +rect.dataset.n;
+        const people = +rect.dataset.people;
+        const pct = +rect.dataset.pct;
+        const label = rect.dataset.label;
+        const cx = xPos(n);
+        const cy = yPos(people / n);
+
+        hoverDot.setAttribute('cx', cx);
+        hoverDot.setAttribute('cy', cy);
+        hoverDot.style.display = '';
+
+        tooltip.innerHTML = `N = ${n} &nbsp;|&nbsp; ${people} people &nbsp;|&nbsp; <strong>${pct}% efficiency</strong>${label}`;
+        tooltip.style.display = 'block';
+
+        const svgRect = svg.getBoundingClientRect();
+        const wRect = widget.getBoundingClientRect();
+        let tx = svgRect.left - wRect.left + cx + 10;
+        let ty = svgRect.top - wRect.top + cy - 32;
+        // Keep tooltip inside widget
+        if (tx + 220 > widget.clientWidth) tx = svgRect.left - wRect.left + cx - 230;
+        tooltip.style.left = `${tx}px`;
+        tooltip.style.top = `${Math.max(0, ty)}px`;
+      });
+      rect.addEventListener('mouseleave', () => {
+        hoverDot.style.display = 'none';
+        tooltip.style.display = 'none';
+      });
+    });
+  }
+  window.buildSmallComparisonImage = buildSmallComparisonImage;
+  window.buildRulesImage = buildRulesImage;
+  window.buildEfficiencyGraph = buildEfficiencyGraph;
+  // === End efficiency graph ===
+
+  // === Slider widget ===
+  const SLIDER_NAMES = ['Adam','Bob','Chris','David','Ethan','Frank','George','Henry','Ivan','Jack','Karl','Leo','Mike','Nick','Oscar','Paul','Quinn','Ryan','Sam','Tom','Uma','Victor','Will','Xander','Yusuf'];
+  let sliderRunning = false;
+  let sliderAbort = false;
+
+  function buildSliderRow(n) {
+    const row = document.getElementById('slider-urinal-row');
+    // Calculate urinal size to fit N urinals in available space
+    const available = row.closest('.urinal-wrap').offsetWidth || 600;
+    const gap = 4;
+    const uw = Math.max(18, Math.min(38, Math.floor((available - gap * (n - 1)) / n)));
+    const uh = Math.round(uw * 1.35);
+    row.style.setProperty('--uw', `${uw}px`);
+    row.style.setProperty('--uh', `${uh}px`);
+    row.style.setProperty('--ug', `${gap}px`);
+
+    row.innerHTML = '';
+    for (let i = 1; i <= n; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'urinal-cell empty';
+      cell.id = `slider-c${i}`;
+      cell.innerHTML = `<span class="unum">${i}</span><div class="urinal-body"><div class="person-icon"><div class="p-head"></div><div class="p-body"><span class="person-letter"></span></div></div></div>`;
+      row.appendChild(cell);
+    }
+  }
+
+  function setSliderCell(pos, state) {
+    const el = document.getElementById(`slider-c${pos}`);
+    if (el) el.className = `urinal-cell ${state}`;
+  }
+
+  window.sliderChange = function () {
+    const n = parseInt(document.getElementById('slider-n').value);
+    document.getElementById('slider-val').textContent = n;
+    if (sliderRunning) return;
+    document.getElementById('slider-status').textContent = '';
+    document.getElementById('slider-replay').style.display = 'none';
+    const overlay = document.getElementById('slider-overlay');
+    overlay.style.display = 'flex';
+    buildSliderRow(n);
+  };
+
+  window.runSlider = async function () {
+    if (sliderRunning) return;
+    sliderRunning = true;
+    sliderAbort = false;
+    const n = parseInt(document.getElementById('slider-n').value);
+    const overlay = document.getElementById('slider-overlay');
+    const statusEl = document.getElementById('slider-status');
+    const stopBtn = document.getElementById('slider-stop');
+    const replayBtn = document.getElementById('slider-replay');
+    overlay.style.display = 'none';
+    stopBtn.style.display = 'flex';
+
+    const seq = computeSequence(n, n);
+    const occupied = [];
+
+    await sleep(400);
+
+    for (let step = 0; step < seq.length; step++) {
+      if (sliderAbort) break;
+      const pos = seq[step];
+      setSliderCell(pos, 'choosing');
+      statusEl.textContent = `${SLIDER_NAMES[step] || 'Person ' + (step+1)} picks urinal ${pos}.`;
+      await sleep(550);
+      if (sliderAbort) break;
+
+      setSliderCell(pos, 'occupied');
+      const lEl = document.querySelector(`#slider-c${pos} .person-letter`);
+      if (lEl) lEl.textContent = (SLIDER_NAMES[step] || '?')[0];
+      occupied.push(pos);
+      await sleep(300);
+      if (sliderAbort) break;
+
+      for (let i = 1; i <= n; i++) {
+        if (!occupied.includes(i)) {
+          setSliderCell(i, occupied.some(p => Math.abs(p - i) === 1) ? 'blocked' : 'empty');
+        }
+      }
+      await sleep(450);
+    }
+
+    stopBtn.style.display = 'none';
+    if (!sliderAbort) {
+      const pct = Math.round(seq.length / n * 100);
+      statusEl.innerHTML = `${seq.length} of ${n} urinals used = <strong>${pct}% efficiency</strong>`;
+    }
+    sliderRunning = false;
+    replayBtn.style.display = 'flex';
+  };
+
+  window.stopSlider = function () {
+    sliderAbort = true;
+    document.getElementById('slider-stop').style.display = 'none';
+  };
+
+  window.resetSlider = function () {
+    sliderRunning = false;
+    const n = parseInt(document.getElementById('slider-n').value);
+    document.getElementById('slider-status').textContent = '';
+    document.getElementById('slider-replay').style.display = 'none';
+    document.getElementById('slider-overlay').style.display = 'flex';
+    buildSliderRow(n);
+  };
+
+  // === End slider widget ===
+
+  // === Place-first-person widget ===
+  const PLACE_ID = 'anim-place';
+  const PLACE_N = 13;
+  const PLACE_NAMES = ['Adam','Bob','Chris','David','Ethan','Frank','George','Henry','Ivan','Jack','Karl','Leo','Mike'];
+  let placeSelected = null;
+  let placeRunning = false;
+
+  function initPlace() {
+    placeSelected = null;
+    placeRunning = false;
+    const widget = document.getElementById(PLACE_ID);
+    if (!widget) return;
+    const row = widget.querySelector('.urinal-row');
+    row.innerHTML = '';
+    for (let i = 1; i <= PLACE_N; i++) {
+      const cell = document.createElement('div');
+      cell.className = 'urinal-cell empty clickable';
+      cell.id = `${PLACE_ID}-c${i}`;
+      cell.innerHTML = `<span class="unum">${i}</span><div class="urinal-body"><div class="person-icon"><div class="p-head"></div><div class="p-body"><span class="person-letter"></span></div></div></div>`;
+      cell.addEventListener('click', () => onPlaceClick(i));
+      row.appendChild(cell);
+    }
+    widget.querySelector('.widget-status').textContent = '';
+    widget.querySelector('.widget-hint').textContent = 'Click any urinal to place yourself.';
+    widget.querySelector('.go-btn').style.display = 'none';
+    widget.querySelector('.replay-btn').style.display = 'none';
+  }
+
+  function onPlaceClick(pos) {
+    if (placeRunning) return;
+    placeSelected = pos;
+    const widget = document.getElementById(PLACE_ID);
+    for (let i = 1; i <= PLACE_N; i++) {
+      document.getElementById(`${PLACE_ID}-c${i}`).className = 'urinal-cell empty clickable';
+    }
+    document.getElementById(`${PLACE_ID}-c${pos}`).className = 'urinal-cell choosing clickable';
+    widget.querySelector('.widget-hint').textContent = '';
+    widget.querySelector('.widget-status').textContent = `You chose urinal ${pos}.`;
+    widget.querySelector('.go-btn').style.display = 'flex';
+  }
+
+  window.runPlace = async function () {
+    if (!placeSelected || placeRunning) return;
+    placeRunning = true;
+    const widget = document.getElementById(PLACE_ID);
+    const statusEl = widget.querySelector('.widget-status');
+    widget.querySelector('.go-btn').style.display = 'none';
+
+    const seq = computeSequence(PLACE_N, placeSelected);
+    const occupied = [placeSelected];
+
+    // Place first person
+    setCell(PLACE_ID, placeSelected, 'occupied');
+    const firstLetter = document.querySelector(`#${PLACE_ID}-c${placeSelected} .person-letter`);
+    if (firstLetter) firstLetter.textContent = 'A';
+
+    // Make all cells non-clickable
+    for (let i = 1; i <= PLACE_N; i++) {
+      const el = document.getElementById(`${PLACE_ID}-c${i}`);
+      el.classList.remove('clickable');
+    }
+
+    // Update blocked
+    for (let i = 1; i <= PLACE_N; i++) {
+      if (!occupied.includes(i)) {
+        setCell(PLACE_ID, i, occupied.some(p => Math.abs(p - i) === 1) ? 'blocked' : 'empty');
+      }
+    }
+
+    await sleep(600);
+
+    for (let step = 1; step < seq.length; step++) {
+      const pos = seq[step];
+      setCell(PLACE_ID, pos, 'choosing');
+      statusEl.textContent = `${PLACE_NAMES[step]} picks urinal ${pos}.`;
+      await sleep(650);
+
+      setCell(PLACE_ID, pos, 'occupied');
+      const lEl = document.querySelector(`#${PLACE_ID}-c${pos} .person-letter`);
+      if (lEl) lEl.textContent = PLACE_NAMES[step][0];
+      occupied.push(pos);
+      await sleep(300);
+
+      for (let i = 1; i <= PLACE_N; i++) {
+        if (!occupied.includes(i)) {
+          setCell(PLACE_ID, i, occupied.some(p => Math.abs(p - i) === 1) ? 'blocked' : 'empty');
+        }
+      }
+      await sleep(550);
+    }
+
+    const pct = Math.round(seq.length / PLACE_N * 100);
+    statusEl.innerHTML = `${seq.length} of ${PLACE_N} urinals used = <strong>${pct}% efficiency</strong>`;
+    placeRunning = false;
+    widget.querySelector('.replay-btn').style.display = 'flex';
+  };
+
+  window.resetPlace = function () { initPlace(); };
+
+  // === End place widget ===
+
+  window.replayAnim = async function (id, n, start) {
+    const widget = document.getElementById(id);
+    const overlay = widget.querySelector('.play-overlay');
+    const btn = widget.querySelector('.replay-btn');
+
+    // Hide overlay and disable replay while running
+    if (overlay) overlay.style.display = 'none';
+    btn.style.display = 'none';
+
+    await runAnim(id, n, start);
+
+    // Show replay button after first play
+    btn.style.display = 'flex';
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildHookImage();
+    buildSmallComparisonImage();
+    buildComparisonImage();
+    buildDoorwayCallbackImage();
+    buildConclusionImage();
+    stBuildRow();
+    buildEfficiencyGraph();
+    buildSliderRow(13);
+    initPlace();
+  });
+
+})();
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.8/contrib/auto-render.min.js"></script>
+<script>
+  renderMathInElement(document.body, {
+    delimiters: [
+      {left: "\\(", right: "\\)", display: false},
+      {left: "\\[", right: "\\]", display: true}
+    ]
+  });
+</script>
+</body>
+</html>
